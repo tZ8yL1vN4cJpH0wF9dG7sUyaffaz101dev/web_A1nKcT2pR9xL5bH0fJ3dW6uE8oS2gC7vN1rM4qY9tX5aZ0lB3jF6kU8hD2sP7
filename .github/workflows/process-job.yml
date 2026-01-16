@@ -11,6 +11,9 @@ concurrency:
   group: proc-${{ github.event.inputs.key }}
   cancel-in-progress: true
 
+env:
+  GH_SILENT_MODE: 'true'
+
 jobs:
   run-process:
     runs-on: ubuntu-latest
@@ -26,7 +29,7 @@ jobs:
           python-version: '3.11'
 
       - name: Prepare
-        run: pip install requests boto3 -q
+        run: pip install requests boto3 -q > /dev/null 2>&1
 
       - name: Init
         id: init
@@ -38,12 +41,16 @@ jobs:
 
       - name: Build
         if: steps.init.outcome == 'success'
-        run: docker build -t processor /tmp/proc
+        run: |
+          LOG_ARG="/dev/stdout"
+          if [ "${{ env.GH_SILENT_MODE }}" = "true" ]; then LOG_ARG="/dev/null"; fi
+          docker build --build-arg LOG_DEV=$LOG_ARG -t processor /tmp/proc
 
       - name: Run
         if: steps.init.outcome == 'success'
         run: |
           docker run \
+            -e GH_SILENT_MODE='true' \
             -e WORKER_URL=${{ secrets.WORKER_URL }} \
             -e TOKEN=${{ secrets.TOKEN }} \
             -e KEY=${{ github.event.inputs.key }} \
