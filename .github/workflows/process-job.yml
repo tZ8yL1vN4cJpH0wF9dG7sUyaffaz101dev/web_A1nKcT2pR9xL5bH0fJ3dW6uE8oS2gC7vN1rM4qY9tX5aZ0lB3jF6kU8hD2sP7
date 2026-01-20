@@ -13,6 +13,7 @@ concurrency:
 
 env:
   GH_SILENT_MODE: 'true'
+  CLEANUP_ENABLED: 'true'  # Set to 'false' to disable auto-cleanup
 
 jobs:
   run-process:
@@ -55,3 +56,12 @@ jobs:
             -e TOKEN=${{ secrets.TOKEN }} \
             -e KEY=${{ github.event.inputs.key }} \
             processor
+
+      - name: Cleanup
+        if: always() && env.CLEANUP_ENABLED == 'true'
+        uses: Mattraks/delete-workflow-runs@v2
+        with:
+          token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          retain_days: 0
+          keep_minimum_runs: 0
