@@ -34,6 +34,7 @@ I set up a Raspberry Pi with a camera (eventually), but for now it's just schedu
 
 ## Progress
 - 1st phase e stable...
+- gas e fol deya suru korse...
 
 
 ## 🚀 Running
@@ -54,4 +55,5 @@ Honestly? To learn Git and show my friend how GitHub works. Plus, keeping myself
 ---
 
 *"The best time to plant a tree was 20 years ago. The second best time is now."* 🌳
+
 
